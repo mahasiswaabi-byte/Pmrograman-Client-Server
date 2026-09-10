@@ -22,7 +22,7 @@
           <li><a href="#">Hubungi Kami</a></li>
         </ul>
 
-        <a href="#" class="nav-button">Login</a>
+        <a href="#login-modal" class="nav-button" id="login-button">Login</a>
       </nav>
     </header>
 
@@ -35,5 +35,27 @@
         <a href="#" class="hero-button">Lihat Dulu</a>
       </div>
     </main>
+
+    <div class="login-modal" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-title" hidden>
+      <div class="login-box">
+        <button class="close-button" id="close-login" type="button" aria-label="Tutup">&times;</button>
+        <h2 id="login-title">Login</h2>
+        <form id="login-form">
+          <label for="username">Nama Pengguna:</label>
+          <input id="username" name="username" type="text" autocomplete="username" required />
+
+          <label for="password">Kata Sandi:</label>
+          <div class="password-field">
+            <input id="password" name="password" type="password" autocomplete="current-password" required />
+            <button class="password-toggle" id="password-toggle" type="button" aria-label="Tampilkan kata sandi" title="Tampilkan kata sandi">&#128065;</button>
+          </div>
+
+          <button class="submit-button" type="submit">Masuk</button>
+          <p class="login-message" id="login-message" role="status"></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="Login.js"></script>
     </body>
 </html>
