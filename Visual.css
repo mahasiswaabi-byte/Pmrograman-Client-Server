@@ -10,18 +10,31 @@ body {
 }
 
 .navbar {
-  width: 90%;
-  margin: 0 auto;
-  padding: 25px 0;
+  width: 100%;
+  margin: 0;
+  padding: 25px 24px;
+  box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 0;
   color: white;
   font-size: 40px;
   font-weight: bold;
+  text-decoration: none;
+}
+
+.logo-image {
+  display: block;
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
 }
 
 .nav-menu {
@@ -93,7 +106,7 @@ body {
   .navbar {
     flex-wrap: wrap;
     justify-content: center;
-    padding: 20px 0;
+    padding: 20px;
   }
 
   .nav-menu {
@@ -105,8 +118,12 @@ body {
   }
 
   .logo {
-    width: 100%;
-    text-align: center;
+    margin-left: 0;
+  }
+
+  .logo-image {
+    width: 52px;
+    height: 52px;
   }
 
   .hero-text h1 {
