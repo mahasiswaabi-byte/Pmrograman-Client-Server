@@ -46,7 +46,30 @@ passwordToggle.addEventListener("click", () => {
 	);
 });
 
-loginForm.addEventListener("submit", (event) => {
+loginForm.addEventListener("submit", async (event) => {
 	event.preventDefault();
-	loginMessage.textContent = "Data login siap diproses.";
+	const submitButton = loginForm.querySelector('[type="submit"]');
+	submitButton.disabled = true;
+	loginMessage.textContent = "Memeriksa data login...";
+
+	try {
+		const response = await fetch("Koneksi/Login.php", {
+			method: "POST",
+			body: new FormData(loginForm),
+			headers: { Accept: "application/json" },
+		});
+		const result = await response.json();
+
+		if (!response.ok || !result.success) {
+			loginMessage.textContent = result.message || "Nama pengguna atau kata sandi salah.";
+			return;
+		}
+
+		loginMessage.textContent = "Login berhasil. Mengalihkan ke beranda...";
+		window.location.href = "Dasbor/Beranda.html";
+	} catch {
+		loginMessage.textContent = "Tidak dapat memproses login. Periksa koneksi server.";
+	} finally {
+		submitButton.disabled = false;
+	}
 });
