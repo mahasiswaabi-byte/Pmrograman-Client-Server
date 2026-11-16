@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Navbar Sederhana</title>
+    <title>Arb.Wcite</title>
     <link rel="stylesheet" href="Visual.css" />
   </head>
 
@@ -22,7 +22,13 @@
           <li><a href="#">Hubungi Kami</a></li>
         </ul>
 
-        <button type="button" class="nav-button" id="login-button" aria-controls="login-modal">Login</button>
+        <div class="nav-actions">
+          <button type="button" class="nav-button nav-button-secondary" id="register-button" aria-controls="register-modal">Daftar</button>
+          <button type="button" class="nav-button" id="login-button" aria-controls="login-modal">Login</button>
+          <a class="nav-button" id="dashboard-button" href="Dasbor/Beranda.php" hidden>Beranda</a>
+          <button type="button" class="nav-button nav-button-secondary" id="logout-button" hidden>Keluar / Ganti akun</button>
+        </div>
+        <p class="account-message" id="account-message" role="status" hidden></p>
       </nav>
     </header>
 
@@ -52,6 +58,53 @@
 
           <button class="submit-button" type="submit">Masuk</button>
           <p class="login-message" id="login-message" role="status"></p>
+          <p class="auth-switch">Belum punya akun? <button class="text-button" id="open-register" type="button">Daftar sekarang</button></p>
+        </form>
+      </div>
+    </div>
+
+    <div class="login-modal auth-modal" id="register-modal" role="dialog" aria-modal="true" aria-labelledby="register-title" hidden>
+      <div class="login-box register-box">
+        <button class="close-button" id="close-register" type="button" aria-label="Tutup">&times;</button>
+        <h2 id="register-title">Daftar Akun</h2>
+        <form id="register-form">
+          <label for="register-name">Nama lengkap:</label>
+          <input id="register-name" name="full_name" type="text" autocomplete="name" maxlength="100" required />
+
+          <label for="register-username">Nama pengguna:</label>
+          <input id="register-username" name="username" type="text" autocomplete="username" minlength="3" maxlength="50" pattern="[A-Za-z0-9._-]{3,50}" aria-describedby="username-help" required />
+          <small class="form-help" id="username-help">3-50 karakter: huruf, angka, titik, garis bawah, atau tanda hubung.</small>
+
+          <label for="register-email">Email:</label>
+          <input id="register-email" name="email" type="email" autocomplete="email" maxlength="254" required />
+
+          <label for="register-region">Daerah/Provinsi:</label>
+          <input id="register-region" name="region" type="text" autocomplete="address-level1" maxlength="100" required />
+
+          <label for="register-country">Negara:</label>
+          <input id="register-country" name="country" type="text" autocomplete="country-name" maxlength="100" required />
+
+          <label for="register-password">Kata sandi:</label>
+          <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="72" required />
+
+          <label for="register-password-confirm">Ulangi kata sandi:</label>
+          <input id="register-password-confirm" name="password_confirm" type="password" autocomplete="new-password" minlength="8" maxlength="72" required />
+
+          <fieldset class="location-fieldset">
+            <legend>Lokasi (opsional)</legend>
+            <p class="form-help">Lokasi hanya diambil jika kamu menyetujui permintaan browser. Koordinat akan disimpan bersama profil akun.</p>
+            <div class="location-controls">
+              <button class="location-button" id="get-location" type="button">Izinkan &amp; ambil lokasi</button>
+              <button class="text-button" id="clear-location" type="button" hidden>Hapus lokasi</button>
+            </div>
+            <p class="form-help" id="location-status" role="status">Belum ada lokasi yang dipilih.</p>
+            <input id="register-latitude" name="latitude" type="hidden" />
+            <input id="register-longitude" name="longitude" type="hidden" />
+          </fieldset>
+
+          <button class="submit-button" type="submit">Buat akun</button>
+          <p class="login-message" id="register-message" role="status"></p>
+          <p class="auth-switch">Sudah punya akun? <button class="text-button" id="open-login" type="button">Login</button></p>
         </form>
       </div>
     </div>

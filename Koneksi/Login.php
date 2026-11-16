@@ -41,6 +41,10 @@ try {
         exit;
     }
 
+    session_start();
+    session_regenerate_id(true);
+    $_SESSION["username"] = $loginUsername;
+
     echo json_encode(["success" => true]);
 } catch (Throwable $error) {
     http_response_code(500);

@@ -1,9 +1,9 @@
 <?php
-include "Koneksi.php";
-
-if ($conn) {
+try {
+    require_once __DIR__ . "/Koneksi.php";
     echo "Connection successful";
-} else {
+} catch (Throwable $error) {
+    http_response_code(500);
     echo "Connection failed";
 }
 ?>

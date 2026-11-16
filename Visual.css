@@ -70,6 +70,36 @@ body {
   text-align: center;
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-actions [hidden] {
+  display: none;
+}
+
+.account-message {
+  margin: 0;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.session-user {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.nav-button-secondary {
+  background-color: transparent;
+  outline: 1px solid #38bdf8;
+}
+
+.nav-button-secondary:hover {
+  background-color: #2b4a8d;
+}
+
 .hero {
   min-height: 80vh;
   display: flex;
@@ -122,6 +152,10 @@ body {
   display: none;
 }
 
+.auth-modal {
+  overflow-y: auto;
+}
+
 .login-box {
   position: relative;
   width: min(100%, 380px);
@@ -131,6 +165,12 @@ body {
   background-color: #ffffff;
   color: #38bdf8;
   box-shadow: 0 20px 60px rgba(4, 201, 255, 0.35);
+}
+
+.register-box {
+  width: min(100%, 440px);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
 }
 
 .login-box h2 {
@@ -164,6 +204,74 @@ body {
   border: 1px solid #b8c2df;
   border-radius: 8px;
   font-size: 16px;
+}
+
+.form-help {
+  display: block;
+  margin-top: 6px;
+  color: #435071;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.location-fieldset {
+  margin: 20px 0 0;
+  padding: 14px;
+  border: 1px solid #b8c2df;
+  border-radius: 8px;
+}
+
+.location-fieldset legend {
+  padding: 0 6px;
+  font-weight: bold;
+}
+
+.location-fieldset .form-help {
+  margin-top: 0;
+}
+
+.location-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.location-button {
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 6px;
+  background-color: #223a6f;
+  color: #ffffff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.location-button:disabled,
+.submit-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.text-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #155b7c;
+  font: inherit;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.auth-switch {
+  margin: 18px 0 0;
+  color: #35436d;
+  font-size: 14px;
+  text-align: center;
 }
 
 .password-field {

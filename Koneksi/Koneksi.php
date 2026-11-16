@@ -1,13 +1,13 @@
 <?php
 $host = "localhost";
-$username = "root";
-$password = "";
+$dbUsername = "root";
+$dbPassword = "";
 $database = "arb.wcite";
 
-$conn = mysqli_connect($host, $username, $password, $database);
+$conn = mysqli_connect($host, $dbUsername, $dbPassword, $database);
 
 if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+    throw new RuntimeException("Database connection failed.");
 }
 
 ?>
