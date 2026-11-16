@@ -197,13 +197,19 @@ body {
   font-weight: bold;
 }
 
-.login-box input {
+.login-box input,
+.login-box select {
   width: 100%;
   box-sizing: border-box;
   padding: 11px 12px;
   border: 1px solid #b8c2df;
   border-radius: 8px;
   font-size: 16px;
+}
+
+.login-box input:disabled {
+  background-color: #edf0f7;
+  cursor: not-allowed;
 }
 
 .form-help {
