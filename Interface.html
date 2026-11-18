@@ -4,22 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Arb.Wcite</title>
-    <link rel="stylesheet" href="Visual.css" />
+    <link rel="stylesheet" href="Visual.css?v=20261118-community" />
   </head>
 
-  <body>
+  <body class="home-page">
     <header class="header">
       <nav class="navbar">
-        <a class="logo" href="#" aria-label="Beranda">
+        <a class="logo" href="#beranda" aria-label="Beranda">
           <img src="LogoArb.png" alt="Logo" class="logo-image" />
           <span>Arb.Wcite</span>
         </a>
       
         <ul class="nav-menu">
-          <li><a href="#">Menu</a></li>
-          <li><a href="#">Informasi</a></li>
-          <li><a href="#">Perbaikan</a></li>
-          <li><a href="#">Hubungi Kami</a></li>
+          <li><a href="#beranda">Beranda</a></li>
+          <li><a href="#pengumuman">Pengumuman</a></li>
+          <li><a href="#agenda">Agenda</a></li>
+          <li><a href="#anggota">Anggota</a></li>
         </ul>
 
         <div class="nav-actions">
@@ -32,14 +32,80 @@
       </nav>
     </header>
 
-    <main class="hero">
-      <div class="hero-text">
-        <p class="label">Simple & Modern</p>
-        <h1>Navigation bar yang menarik dan mudah dipahami</h1>
-        <p>Contoh navbar sederhana hanya dengan HTML dan CSS
-        </p>
-        <a href="#" class="hero-button">Lihat Dulu</a>
-      </div>
+    <main class="community-home">
+      <section class="community-hero" id="beranda">
+        <div class="home-container community-hero-inner">
+          <div class="community-hero-copy">
+            <p class="home-eyebrow">PORTAL KOMUNITAS LOKAL</p>
+            <h1>Kenal lebih dekat. Bergerak bersama.</h1>
+            <p>Temukan kabar terbaru, kegiatan mendatang, dan anggota komunitas Arb.Wcite.</p>
+            <div class="home-actions">
+              <a class="home-button" href="#agenda">Lihat agenda</a>
+              <button type="button" class="community-join-button" id="community-join-button">Gabung komunitas</button>
+            </div>
+          </div>
+          <aside class="community-hero-note">
+            <span class="community-note-mark" aria-hidden="true">A</span>
+            <p>Komunitas tumbuh saat kita saling mengenal dan ikut berkontribusi.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="home-section community-intro" id="tentang">
+        <div class="home-container home-info-layout">
+          <div class="home-section-heading">
+            <p class="home-eyebrow">RUANG UNTUK BERTUMBUH</p>
+            <h2>Komunitas lokal, terhubung dalam satu ruang.</h2>
+          </div>
+          <div class="home-section-copy">
+            <p>Arb.Wcite membantu anggota mengikuti informasi komunitas, berpartisipasi dalam kegiatan, dan mengenal sesama anggota di berbagai wilayah.</p>
+            <a class="home-inline-link" href="#anggota">Kenali anggota komunitas <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="community-content-section" id="pengumuman">
+        <div class="home-container">
+          <div class="community-section-heading">
+            <div>
+              <p class="home-eyebrow">KABAR KOMUNITAS</p>
+              <h2>Pengumuman terbaru</h2>
+            </div>
+            <span class="community-section-number">01</span>
+          </div>
+          <p class="community-data-status" id="announcements-status" role="status" aria-live="polite">Memuat pengumuman...</p>
+          <div class="community-card-grid" id="announcements-list"></div>
+        </div>
+      </section>
+
+      <section class="community-content-section community-content-alt" id="agenda">
+        <div class="home-container">
+          <div class="community-section-heading">
+            <div>
+              <p class="home-eyebrow">CATAT TANGGALNYA</p>
+              <h2>Agenda mendatang</h2>
+            </div>
+            <span class="community-section-number">02</span>
+          </div>
+          <p class="community-data-status" id="events-status" role="status" aria-live="polite">Memuat agenda...</p>
+          <div class="community-card-grid" id="events-list"></div>
+        </div>
+      </section>
+
+      <section class="community-content-section" id="anggota">
+        <div class="home-container">
+          <div class="community-section-heading">
+            <div>
+              <p class="home-eyebrow">SALING MENGENAL</p>
+              <h2>Anggota komunitas</h2>
+            </div>
+            <span class="community-section-number">03</span>
+          </div>
+          <p class="community-privacy-note">Daftar ini hanya menampilkan nama dan kabupaten/kota anggota yang secara sukarela mengizinkan profilnya ditampilkan. Email dan lokasi GPS tidak ditampilkan.</p>
+          <p class="community-data-status" id="members-status" role="status" aria-live="polite">Memuat daftar anggota...</p>
+          <ul class="community-member-list" id="members-list"></ul>
+        </div>
+      </section>
     </main>
 
     <div class="login-modal" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-title" hidden>
@@ -157,6 +223,14 @@
       </div>
     </div>
 
+    <footer class="home-footer">
+      <div class="home-container">
+        <span>Arb.Wcite</span>
+        <span>Komunitas lokal, terhubung dalam satu ruang.</span>
+      </div>
+    </footer>
+
     <script src="Login.js"></script>
+    <script src="Community.js"></script>
     </body>
 </html>

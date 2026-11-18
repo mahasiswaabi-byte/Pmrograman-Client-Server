@@ -1,7 +1,7 @@
 # Flowchart Program Arb.Wcite
 
 Dokumen ini menggambarkan alur aplikasi berdasarkan implementasi saat ini:
-`Interface.html`, `Login.js`, endpoint PHP di `Koneksi/`, dan `Dasbor/Beranda.php`.
+`Interface.html`, `Login.js`, `Community.js`, endpoint PHP di `Koneksi/`, dan dashboard di `Dasbor/`.
 Diagram menggunakan Mermaid dan dapat ditampilkan di VS Code atau GitHub.
 
 ## 1. Inisialisasi halaman dan data lokasi
@@ -9,10 +9,11 @@ Diagram menggunakan Mermaid dan dapat ditampilkan di VS Code atau GitHub.
 ```mermaid
 flowchart TD
     A([Mulai]) --> B[Buka Interface.html melalui Apache]
-    B --> C[Muat Visual.css dan Login.js]
+    B --> C[Muat Visual.css, Login.js, dan Community.js]
     C --> D[Periksa sesi melalui GET Koneksi/Session.php]
     C --> E[Muat daftar negara dari CountriesNow]
     C --> F{URL memiliki login=1?}
+    C --> P[GET Koneksi/Community.php untuk pengumuman, agenda, dan direktori]
 
     D --> G{Respons sesi berhasil?}
     G -->|Ya, sesi aktif| H[Sembunyikan tombol Login dan Daftar; tampilkan Beranda dan Keluar]
@@ -25,12 +26,18 @@ flowchart TD
 
     F -->|Ya| N[Buka modal Login]
     F -->|Tidak| O[Modal tetap tersembunyi]
+
+    P --> Q{Data komunitas berhasil dimuat?}
+    Q -->|Ya| R[Tampilkan pengumuman, agenda, dan anggota yang menyetujui publikasi]
+    Q -->|Tidak| S[Tampilkan status data komunitas tidak tersedia]
 ```
 
 Daftar negara diambil dari API CountriesNow dengan Indonesia sebagai pilihan
 awal. Wilayah Indonesia dimuat dari API Emsifa; jika API negara gagal, negara
 dapat diisi manual, dan jika API wilayah gagal, rincian wilayah dapat diisi
 manual.
+Data komunitas publik hanya mengirim nama dan kabupaten/kota anggota yang
+secara eksplisit mengaktifkan direktori; email dan koordinat tidak disertakan.
 
 ## 2. Pendaftaran akun dan pemilihan lokasi
 
@@ -121,56 +128,63 @@ flowchart TD
     N --> O{Akun ditemukan dan kata sandi cocok?}
     O -->|Tidak| P[Kirim JSON error 401]
     O -->|Ya| Q[Regenerasi ID sesi dan simpan username]
-    Q --> R[Kirim JSON success]
+    Q --> R[Kirim JSON success dengan role akun]
     N -.->|Koneksi atau proses database gagal| S[Kirim JSON error 500]
 
     M --> T[Login.js menampilkan pesan gagal]
     P --> T
     S --> T
     T --> H
-    R --> U[Arahkan browser ke Dasbor/Beranda.php]
+    R --> U{Role akun?}
 
-    U --> V{Sesi username valid?}
-    V -->|Tidak| W[Arahkan kembali ke Interface.html?login=1]
-    V -->|Ya| X[Tampilkan dashboard dan username]
-    X -.->|Jika kembali ke Interface.html| B
+    U -->|admin| V[Arahkan ke Dasbor/Admin.php]
+    U -->|user| W[Arahkan ke Dasbor/Beranda.php]
+    V --> X{Role admin valid di database?}
+    X -->|Ya| Y[Tampilkan statistik dan pengelolaan konten komunitas]
+    X -->|Tidak| Z[Arahkan ke beranda anggota]
+    W --> AA{Sesi username dan profil valid?}
+    AA -->|Ya| AB[Tampilkan pengaturan persetujuan direktori]
+    AA -->|Tidak| AC[Arahkan kembali ke Interface.html?login=1]
 ```
 
 Login menerima kata sandi hash melalui `password_verify`; kata sandi lama yang
 belum di-hash masih diperiksa menggunakan pembandingan aman `hash_equals`.
 
-## 4. Dashboard, navigasi, dan logout
+## 4. Konten komunitas, direktori, dan logout
 
 ```mermaid
 flowchart TD
-    A([Buka Beranda.html lama atau Dasbor/Beranda.php]) --> B{Rute yang dibuka?}
-    B -->|Beranda.html lama| C[Arahkan ke Dasbor/Beranda.php]
-    B -->|Dasbor/Beranda.php| D{Sesi username valid?}
-    C --> D
-    D -->|Tidak| E[Arahkan ke Interface.html?login=1]
-    D -->|Ya| F[Tampilkan dashboard dan username sesi]
+    A([Buka Dasbor/Admin.php]) --> B{Sesi dan role admin valid?}
+    B -->|Tidak ada sesi| C[Arahkan ke Interface.html?login=1]
+    B -->|Bukan admin| D[Arahkan ke Dasbor/Beranda.php]
+    B -->|Ya| E[Tampilkan statistik dan formulir konten]
+    E --> F{Aksi admin dengan token CSRF valid?}
+    F -->|Terbitkan pengumuman| G[Simpan judul dan isi pengumuman]
+    F -->|Terbitkan agenda| H[Simpan deskripsi, lokasi, dan waktu kegiatan]
+    F -->|Hapus konten| I[Hapus konten terpilih]
+    G --> J[Tampilkan konten pada halaman publik]
+    H --> J
+    I --> J
+    F -->|Tidak valid| K[Tampilkan pesan kesalahan]
 
-    F --> G{Bagian yang dipilih?}
-    G -->|Logo atau Beranda| H[Arahkan ke bagian beranda]
-    G -->|Informasi| I[Arahkan ke bagian informasi]
-    G -->|Perbaikan| J[Arahkan ke panduan perbaikan]
-    G -->|Hubungi Kami| K[Arahkan ke bagian kontak]
-    H --> G
-    I --> G
-    J --> G
-    K --> G
+    L([Anggota membuka Dasbor/Beranda.php]) --> M{Sesi anggota valid?}
+    M -->|Tidak| C
+    M -->|Ya| N[Pilih tampil atau sembunyi di direktori]
+    N --> O{Token CSRF dan pilihan valid?}
+    O -->|Ya| P[Simpan PublicDirectory di account_profiles]
+    O -->|Tidak| Q[Tampilkan pesan kesalahan]
+    P --> R[Direktori publik hanya mengambil nama dan kabupaten/kota]
 
-    F --> L[Klik Keluar / Ganti akun]
-    L --> M[Kirim POST ke Koneksi/Logout.php]
-    M --> N[Hapus data sesi dan akhiri sesi]
-    N --> O{Logout berhasil?}
-    O -->|Ya, form dashboard| P[Arahkan ke Interface.html?login=1]
-    O -->|Ya, tombol di halaman utama| Q[Kirim JSON sukses; arahkan ke Interface.html?login=1]
-    O -->|Tidak| R[Kirim JSON error 500]
+    S([Klik Keluar]) --> T[Kirim POST ke Koneksi/Logout.php]
+    T --> U[Hapus data sesi dan akhiri sesi]
+    U --> V{Logout berhasil?}
+    V -->|Ya| W[Arahkan ke Interface.html?login=1]
+    V -->|Tidak| X[Kirim pesan atau JSON error]
 ```
 
-Tautan dashboard berpindah ke bagian pada halaman yang sama. Proses perbaikan
-yang tersedia saat ini berupa panduan informasi, bukan pengajuan perbaikan otomatis.
+Pengumuman dan agenda dapat dibaca publik. Aksi penerbitan dan penghapusan hanya
+tersedia untuk admin yang telah diverifikasi di database dan mengirim token CSRF
+yang valid. Anggota dapat mengubah persetujuan direktori kapan saja.
 
 ## 5. Pemeriksaan koneksi database
 

@@ -9,6 +9,7 @@ const registerButton = document.getElementById("register-button");
 const dashboardButton = document.getElementById("dashboard-button");
 const logoutButton = document.getElementById("logout-button");
 const accountMessage = document.getElementById("account-message");
+const communityJoinButton = document.getElementById("community-join-button");
 const registerModal = document.getElementById("register-modal");
 const closeRegisterButton = document.getElementById("close-register");
 const openRegisterButton = document.getElementById("open-register");
@@ -561,6 +562,9 @@ async function updateAccountButtons() {
 		dashboardButton.hidden = !result.authenticated;
 		if (result.authenticated) {
 			dashboardButton.href = result.role === "admin" ? "Dasbor/Admin.php" : "Dasbor/Beranda.php";
+		}
+		if (communityJoinButton) {
+			communityJoinButton.textContent = result.authenticated ? "Buka beranda anggota" : "Gabung komunitas";
 		}
 		logoutButton.hidden = !result.authenticated;
 		accountMessage.hidden = true;
