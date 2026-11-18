@@ -7,8 +7,12 @@ USE `arb.wcite`;
 CREATE TABLE IF NOT EXISTS `login` (
   `Username` VARCHAR(50) NOT NULL,
   `Password` VARCHAR(255) NOT NULL,
+  `Role` ENUM('user', 'admin') NOT NULL DEFAULT 'user',
   PRIMARY KEY (`Username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `login`
+  ADD COLUMN IF NOT EXISTS `Role` ENUM('user', 'admin') NOT NULL DEFAULT 'user' AFTER `Password`;
 
 CREATE TABLE IF NOT EXISTS `account_profiles` (
   `Username` VARCHAR(50) NOT NULL,
@@ -16,6 +20,11 @@ CREATE TABLE IF NOT EXISTS `account_profiles` (
   `Email` VARCHAR(254) NOT NULL,
   `Region` VARCHAR(100) NOT NULL DEFAULT '',
   `Country` VARCHAR(100) NOT NULL DEFAULT '',
+  `Province` VARCHAR(100) NOT NULL DEFAULT '',
+  `Regency` VARCHAR(100) NOT NULL DEFAULT '',
+  `District` VARCHAR(100) NOT NULL DEFAULT '',
+  `Village` VARCHAR(100) NOT NULL DEFAULT '',
+  `Gender` VARCHAR(20) NOT NULL DEFAULT '',
   `Latitude` DECIMAL(10,7) NULL,
   `Longitude` DECIMAL(10,7) NULL,
   `CreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -28,3 +37,10 @@ ALTER TABLE `account_profiles`
 
 ALTER TABLE `account_profiles`
   ADD COLUMN IF NOT EXISTS `Country` VARCHAR(100) NOT NULL DEFAULT '' AFTER `Region`;
+
+ALTER TABLE `account_profiles`
+  ADD COLUMN IF NOT EXISTS `Province` VARCHAR(100) NOT NULL DEFAULT '' AFTER `Country`,
+  ADD COLUMN IF NOT EXISTS `Regency` VARCHAR(100) NOT NULL DEFAULT '' AFTER `Province`,
+  ADD COLUMN IF NOT EXISTS `District` VARCHAR(100) NOT NULL DEFAULT '' AFTER `Regency`,
+  ADD COLUMN IF NOT EXISTS `Village` VARCHAR(100) NOT NULL DEFAULT '' AFTER `District`,
+  ADD COLUMN IF NOT EXISTS `Gender` VARCHAR(20) NOT NULL DEFAULT '' AFTER `Village`;

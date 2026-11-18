@@ -18,7 +18,11 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 $fullName = trim($_POST["full_name"] ?? "");
 $username = trim($_POST["username"] ?? "");
 $email = trim($_POST["email"] ?? "");
-$region = trim($_POST["region"] ?? "");
+$province = trim($_POST["province"] ?? ($_POST["region"] ?? ""));
+$regency = trim($_POST["regency"] ?? "");
+$district = trim($_POST["district"] ?? "");
+$village = trim($_POST["village"] ?? "");
+$gender = trim($_POST["gender"] ?? "");
 $country = trim($_POST["country"] ?? "");
 $password = $_POST["password"] ?? "";
 $passwordConfirm = $_POST["password_confirm"] ?? "";
@@ -37,8 +41,21 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 254) {
     respond(400, false, "Alamat email tidak valid.");
 }
 
-if ($region === "" || mb_strlen($region, "UTF-8") > 100) {
-    respond(400, false, "Daerah/provinsi wajib diisi dan maksimal 100 karakter.");
+foreach (
+    [
+        "Provinsi/daerah" => $province,
+        "Kabupaten/kota" => $regency,
+        "Kecamatan" => $district,
+        "Desa/kelurahan" => $village,
+    ] as $locationName => $locationValue
+) {
+    if ($locationValue === "" || mb_strlen($locationValue, "UTF-8") > 100) {
+        respond(400, false, $locationName . " wajib diisi dan maksimal 100 karakter.");
+    }
+}
+
+if (!in_array($gender, ["Laki-laki", "Perempuan", "Lainnya"], true)) {
+    respond(400, false, "Jenis kelamin tidak valid.");
 }
 
 if ($country === "" || mb_strlen($country, "UTF-8") > 100) {
@@ -132,16 +149,21 @@ try {
     $longitudeForDatabase = $longitude === null ? null : (string) $longitude;
     $insertProfile = mysqli_prepare(
         $conn,
-        "INSERT INTO `account_profiles` (`Username`, `FullName`, `Email`, `Region`, `Country`, `Latitude`, `Longitude`) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO `account_profiles` (`Username`, `FullName`, `Email`, `Region`, `Country`, `Province`, `Regency`, `District`, `Village`, `Gender`, `Latitude`, `Longitude`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
     mysqli_stmt_bind_param(
         $insertProfile,
-        "sssssss",
+        "ssssssssssss",
         $username,
         $fullName,
         $email,
-        $region,
+        $province,
         $country,
+        $province,
+        $regency,
+        $district,
+        $village,
+        $gender,
         $latitudeForDatabase,
         $longitudeForDatabase
     );

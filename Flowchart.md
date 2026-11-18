@@ -27,9 +27,10 @@ flowchart TD
     F -->|Tidak| O[Modal tetap tersembunyi]
 ```
 
-Daftar negara dan daerah diambil langsung oleh browser dari API CountriesNow.
-Jika daftar negara gagal dimuat, pendaftaran tetap dapat dilanjutkan dengan
-mengisi negara dan daerah secara manual.
+Daftar negara diambil dari API CountriesNow dengan Indonesia sebagai pilihan
+awal. Wilayah Indonesia dimuat dari API Emsifa; jika API negara gagal, negara
+dapat diisi manual, dan jika API wilayah gagal, rincian wilayah dapat diisi
+manual.
 
 ## 2. Pendaftaran akun dan pemilihan lokasi
 
@@ -38,64 +39,65 @@ flowchart TD
     A([Klik Daftar]) --> B[Tampilkan modal pendaftaran]
     B --> C{Daftar negara berhasil dimuat?}
 
-    C -->|Ya| D[Pilih negara dari dropdown]
-    D --> E{Daerah negara tersedia di cache?}
-    E -->|Ya| F[Tampilkan saran daerah dari cache]
-    E -->|Tidak| G[Kirim POST negara ke API CountriesNow]
-    G --> H{API memberi data daerah valid?}
-    H -->|Ya, daftar tidak kosong| I[Tampilkan saran daerah; pengguna boleh mengetik manual]
-    H -->|Tidak, kosong, error, atau timeout| J[Aktifkan isian daerah manual dan tampilkan status]
+    C -->|Ya| D[Indonesia dipilih sebagai nilai awal; pengguna dapat memilih negara lain]
+    D --> E{Negara Indonesia?}
+    E -->|Ya| F[Muat provinsi dari API Emsifa]
+    F --> G[Pilih provinsi; muat kabupaten/kota]
+    G --> H[Pilih kabupaten/kota; muat kecamatan]
+    H --> I[Pilih kecamatan; muat desa/kelurahan]
+    E -->|Tidak| J[Muat saran provinsi dari CountriesNow; isian wilayah lainnya manual]
+    F -->|API gagal| K[Aktifkan isian lokasi manual]
+    C -->|Tidak| L[Ketik negara pada kolom manual]
+    L --> M{Negara Indonesia?}
+    M -->|Ya| F
+    M -->|Tidak| J
 
-    C -->|Tidak| K[Ketik negara pada kolom manual]
-    K --> L[Aktifkan isian daerah manual]
+    I --> N{Pengguna ingin berbagi lokasi perangkat?}
+    J --> N
+    K --> N
+    N -->|Tidak| P[Lanjut tanpa koordinat]
+    N -->|Ya| O[Minta izin melalui Geolocation browser]
+    O --> Q{Lokasi berhasil diambil?}
+    Q -->|Ya| R[Simpan latitude dan longitude pada form]
+    Q -->|Tidak, ditolak, atau timeout| P
+    R --> S{Pengguna menghapus lokasi?}
+    S -->|Ya| P
+    S -->|Tidak| T[Koordinat tetap pada form]
 
-    F --> M{Pengguna ingin berbagi lokasi perangkat?}
-    I --> M
-    J --> M
-    L --> M
-    M -->|Tidak| P[Lanjut tanpa koordinat]
-    M -->|Ya| N[Minta izin melalui Geolocation browser]
-    N --> O{Lokasi berhasil diambil?}
-    O -->|Ya| Q[Simpan latitude dan longitude pada form]
-    O -->|Tidak, ditolak, atau timeout| P
-    Q --> R{Pengguna menghapus lokasi?}
-    R -->|Ya| P
-    R -->|Tidak| S[Koordinat tetap pada form]
+    P --> U[Isi profil, gender, negara, provinsi, kabupaten/kota, kecamatan, desa, dan kata sandi]
+    T --> U
+    U --> V{Validasi browser lolos?}
+    V -->|Tidak| W[Browser menandai input yang tidak valid]
+    W --> U
+    V -->|Ya| X{Kata sandi dan konfirmasi sama?}
+    X -->|Tidak| Y[Tampilkan pesan kata sandi tidak sama]
+    Y --> U
+    X -->|Ya| Z[Kirim POST FormData ke Koneksi/Register.php]
 
-    P --> T[Isi nama, username, email, negara, daerah, dan kata sandi]
-    S --> T
-    T --> U{Validasi browser lolos?}
-    U -->|Tidak| V[Browser menandai input yang tidak valid]
-    V --> T
-    U -->|Ya| W{Kata sandi dan konfirmasi sama?}
-    W -->|Tidak| X[Tampilkan pesan kata sandi tidak sama]
-    X --> T
-    W -->|Ya| Y[Kirim POST FormData ke Koneksi/Register.php]
+    Z --> AA{Metode POST dan data server valid?}
+    AA -->|Tidak| AB[Kirim JSON error 405 atau 400]
+    AA -->|Ya| AC[Hubungkan ke database dan periksa tabel profil]
+    AC --> AD{Tabel account_profiles tersedia?}
+    AD -->|Tidak| AE[Kirim JSON error 500 tentang tabel profil]
+    AD -->|Ya| AF{Username atau email sudah digunakan?}
+    AF -->|Ya| AG[Kirim JSON error 409]
+    AF -->|Tidak| AH[Hash kata sandi dan mulai transaksi database]
+    AH --> AI[Simpan kredensial ke tabel login]
+    AI --> AJ[Simpan profil, gender, negara, wilayah, dan koordinat ke account_profiles]
+    AJ --> AK{Transaksi berhasil?}
+    AK -->|Ya| AL[Commit dan kirim JSON 201 sukses]
+    AK -->|Tidak| AM[Rollback dan kirim JSON error 409 atau 500]
 
-    Y --> Z{Metode POST dan data server valid?}
-    Z -->|Tidak| AA[Kirim JSON error 405 atau 400]
-    Z -->|Ya| AB[Hubungkan ke database dan periksa tabel profil]
-    AB --> AC{Tabel account_profiles tersedia?}
-    AC -->|Tidak| AD[Kirim JSON error 500 tentang tabel profil]
-    AC -->|Ya| AE{Username atau email sudah digunakan?}
-    AE -->|Ya| AF[Kirim JSON error 409]
-    AE -->|Tidak| AG[Hash kata sandi dan mulai transaksi database]
-    AG --> AH[Simpan kredensial ke tabel login]
-    AH --> AI[Simpan profil, negara, daerah, dan koordinat ke account_profiles]
-    AI --> AJ{Transaksi berhasil?}
-    AJ -->|Ya| AK[Commit dan kirim JSON 201 sukses]
-    AJ -->|Tidak| AL[Rollback dan kirim JSON error 409 atau 500]
-
-    AA --> AM[Login.js menampilkan pesan gagal]
-    AD --> AM
-    AF --> AM
-    AL --> AM
-    AK --> AN[Reset form dan buka modal Login dengan username terisi]
+    AB --> AN[Login.js menampilkan pesan gagal]
+    AE --> AN
+    AG --> AN
+    AM --> AN
+    AL --> AO[Reset form dan buka modal Login dengan username terisi]
 ```
 
-Negara dan daerah wajib diisi; koordinat lokasi opsional. Jika daftar API gagal,
-pengguna dapat memasukkan negara dan daerah sendiri. Setelah pendaftaran berhasil,
-profil disimpan terpisah dari kredensial.
+Jenis kelamin dan seluruh rincian wilayah wajib diisi; koordinat lokasi opsional.
+Jika daftar API gagal, pengguna dapat memasukkan negara dan wilayah sendiri.
+Setelah pendaftaran berhasil, profil disimpan terpisah dari kredensial.
 
 ## 3. Login dan pemeriksaan sesi
 

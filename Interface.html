@@ -78,18 +78,59 @@
           <label for="register-email">Email:</label>
           <input id="register-email" name="email" type="email" autocomplete="email" maxlength="254" required />
 
+          <label for="register-gender">Jenis kelamin:</label>
+          <select id="register-gender" name="gender" required>
+            <option value="">Pilih jenis kelamin</option>
+            <option value="Laki-laki">Laki-laki</option>
+            <option value="Perempuan">Perempuan</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+
           <label for="register-country">Negara:</label>
-          <select id="register-country" name="country" autocomplete="country-name" aria-describedby="country-status" required>
+          <select id="register-country" name="country" autocomplete="country-name" aria-describedby="country-status" required disabled>
             <option value="">Memuat daftar negara...</option>
           </select>
-          <input id="register-country-manual" type="text" autocomplete="country-name" maxlength="100" aria-describedby="country-status" hidden disabled />
+          <input id="register-country-manual" type="text" value="Indonesia" autocomplete="country-name" maxlength="100" aria-describedby="country-status" hidden disabled />
           <small class="form-help" id="country-status" role="status">Daftar negara sedang dimuat.</small>
 
-          <label for="register-region">Daerah/Provinsi:</label>
-          <input id="register-region" name="region" type="text" list="region-options" autocomplete="address-level1" maxlength="100" aria-describedby="region-help region-status" required disabled />
-          <datalist id="region-options"></datalist>
-          <small class="form-help" id="region-help">Pilih negara untuk melihat saran daerah. Kamu juga bisa mengetik nama daerah sendiri.</small>
-          <small class="form-help" id="region-status" role="status">Pilih negara terlebih dahulu.</small>
+          <div id="indonesia-location-fields">
+            <label for="register-province">Provinsi:</label>
+            <select id="register-province" name="province" autocomplete="address-level1" aria-describedby="location-status-message" required disabled>
+              <option value="">Pilih provinsi</option>
+            </select>
+
+            <label for="register-regency">Kabupaten/kota:</label>
+            <select id="register-regency" name="regency" autocomplete="address-level2" required disabled>
+              <option value="">Pilih kabupaten/kota</option>
+            </select>
+
+            <label for="register-district">Kecamatan:</label>
+            <select id="register-district" name="district" required disabled>
+              <option value="">Pilih kecamatan</option>
+            </select>
+
+            <label for="register-village">Desa/kelurahan:</label>
+            <select id="register-village" name="village" required disabled>
+              <option value="">Pilih desa/kelurahan</option>
+            </select>
+            <small class="form-help" id="location-status-message" role="status">Daftar wilayah Indonesia sedang dimuat.</small>
+          </div>
+
+          <div id="manual-location-fields" hidden>
+            <label for="register-province-manual">Provinsi/daerah:</label>
+            <input id="register-province-manual" name="province" type="text" list="international-province-options" autocomplete="address-level1" maxlength="100" required disabled />
+            <datalist id="international-province-options"></datalist>
+
+            <label for="register-regency-manual">Kabupaten/kota:</label>
+            <input id="register-regency-manual" name="regency" type="text" autocomplete="address-level2" maxlength="100" required disabled />
+
+            <label for="register-district-manual">Kecamatan:</label>
+            <input id="register-district-manual" name="district" type="text" maxlength="100" required disabled />
+
+            <label for="register-village-manual">Desa/kelurahan:</label>
+            <input id="register-village-manual" name="village" type="text" maxlength="100" required disabled />
+            <small class="form-help" id="manual-location-status" role="status"></small>
+          </div>
 
           <label for="register-password">Kata sandi:</label>
           <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="72" required />
