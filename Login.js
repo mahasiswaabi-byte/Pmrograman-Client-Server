@@ -1,7 +1,11 @@
 const loginButton = document.getElementById("login-button");
 const loginModal = document.getElementById("login-modal");
+const serviceModal = document.getElementById("service-modal");
+const closeServiceButton = document.getElementById("close-service");
 const closeLoginButton = document.getElementById("close-login");
 const loginForm = document.getElementById("login-form");
+const loginRoleSelect = document.getElementById("login-role");
+const loginTitle = document.getElementById("login-title");
 const passwordInput = document.getElementById("password");
 const passwordToggle = document.getElementById("password-toggle");
 const loginMessage = document.getElementById("login-message");
@@ -362,15 +366,44 @@ function closeRegisterModal() {
 	}
 }
 
-loginButton.addEventListener("click", openLoginModal);
-communityJoinButton?.addEventListener("click", () => {
-	if (dashboardButton.hidden) {
-		openLoginModal();
-	} else {
-		window.location.href = dashboardButton.href;
+function openServiceModal(event) {
+	if (event) {
+		event.preventDefault();
+	}
+	registerModal.hidden = true;
+	loginModal.hidden = true;
+	serviceModal.hidden = false;
+	document.body.style.overflow = "hidden";
+}
+
+function closeServiceModal() {
+	serviceModal.hidden = true;
+	document.body.style.overflow = "";
+}
+
+loginButton.addEventListener("click", openServiceModal);
+communityJoinButton?.addEventListener("click", openServiceModal);
+closeLoginButton.addEventListener("click", closeLoginModal);
+closeServiceButton.addEventListener("click", closeServiceModal);
+serviceModal.addEventListener("click", (event) => {
+	if (event.target === serviceModal) {
+		closeServiceModal();
 	}
 });
-closeLoginButton.addEventListener("click", closeLoginModal);
+document.querySelectorAll(".service-card").forEach((card) => {
+	card.addEventListener("click", () => {
+		const role = card.dataset.role;
+		loginRoleSelect.value = role;
+		loginRoleSelect.dispatchEvent(new Event("change"));
+		const authSwitch = loginForm.querySelector(".auth-switch");
+		authSwitch.hidden = role !== "mahasiswa";
+		closeServiceModal();
+		loginModal.hidden = false;
+		document.body.style.overflow = "hidden";
+		loginMessage.textContent = "";
+		document.getElementById("username").focus();
+	});
+});
 registerButton.addEventListener("click", openRegisterModal);
 logoutButton.addEventListener("click", async () => {
 	logoutButton.disabled = true;
@@ -419,8 +452,19 @@ document.addEventListener("keydown", (event) => {
 			closeRegisterModal();
 		} else if (!loginModal.hidden) {
 			closeLoginModal();
+		} else if (!serviceModal.hidden) {
+			closeServiceModal();
 		}
 	}
+});
+
+loginRoleSelect.addEventListener("change", () => {
+	const roleLabel = {
+		dosen: "Dosen",
+		mahasiswa: "Mahasiswa",
+		admin: "Operator",
+	};
+	loginTitle.textContent = `Masuk Sebagai ${roleLabel[loginRoleSelect.value] || "Pengguna"}`;
 });
 
 passwordToggle.addEventListener("click", () => {

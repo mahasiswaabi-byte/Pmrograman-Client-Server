@@ -71,7 +71,7 @@ function escapeHtml($value)
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard Admin | Absensi Kampus</title>
+    <title>Dashboard Operator | Absensi Kampus</title>
     <link rel="stylesheet" href="../Visual.css?v=20261120-absensi" />
 </head>
 <body class="home-page">
@@ -87,7 +87,7 @@ function escapeHtml($value)
             <li><a href="#absensi">Absensi</a></li>
         </ul>
         <form class="nav-actions" action="../Koneksi/Logout.php" method="post">
-            <span class="session-user">Admin: <?= escapeHtml($_SESSION["username"]) ?></span>
+            <span class="session-user">Operator: <?= escapeHtml($_SESSION["username"]) ?></span>
             <button class="nav-button nav-button-secondary" type="submit">Keluar</button>
         </form>
     </nav>
@@ -95,7 +95,7 @@ function escapeHtml($value)
 
 <main class="admin-dashboard home-container">
     <section id="ringkasan" class="admin-heading">
-        <p class="home-eyebrow">PANEL ADMIN</p>
+        <p class="home-eyebrow">PANEL OPERATOR</p>
         <h1>Ringkasan sistem absensi</h1>
         <p>Data akun Mahasiswa dan Dosen serta riwayat absensi biometrik.</p>
     </section>

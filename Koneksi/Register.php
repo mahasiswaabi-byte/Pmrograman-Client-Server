@@ -17,6 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 $fullName = trim($_POST["full_name"] ?? "");
 $username = trim($_POST["username"] ?? "");
+$nik = trim($_POST["nik"] ?? "");
+$birthDate = trim($_POST["birth_date"] ?? "");
 $email = trim($_POST["email"] ?? "");
 $province = trim($_POST["province"] ?? ($_POST["region"] ?? ""));
 $regency = trim($_POST["regency"] ?? "");
@@ -24,7 +26,7 @@ $district = trim($_POST["district"] ?? "");
 $village = trim($_POST["village"] ?? "");
 $gender = trim($_POST["gender"] ?? "");
 $country = trim($_POST["country"] ?? "");
-$role = trim($_POST["role"] ?? "");
+$role = "mahasiswa";
 $password = $_POST["password"] ?? "";
 $passwordConfirm = $_POST["password_confirm"] ?? "";
 $latitudeValue = $_POST["latitude"] ?? "";
@@ -36,6 +38,18 @@ if ($fullName === "" || mb_strlen($fullName, "UTF-8") > 100) {
 
 if (!preg_match('/\A[A-Za-z0-9._-]{3,50}\z/', $username)) {
     respond(400, false, "Nama pengguna harus 3-50 karakter dan hanya berisi huruf, angka, titik, garis bawah, atau tanda hubung.");
+}
+
+if (!preg_match('/\A[0-9]{16}\z/', $nik)) {
+    respond(400, false, "NIK harus terdiri dari tepat 16 digit.");
+}
+
+$birthDateObject = DateTime::createFromFormat("Y-m-d", $birthDate);
+if (!$birthDateObject || $birthDateObject->format("Y-m-d") !== $birthDate) {
+    respond(400, false, "Tanggal lahir tidak valid.");
+}
+if ($birthDateObject >= new DateTime("today")) {
+    respond(400, false, "Tanggal lahir harus sebelum hari ini.");
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 254) {
@@ -59,10 +73,6 @@ if (!in_array($gender, ["Laki-laki", "Perempuan", "Lainnya"], true)) {
     respond(400, false, "Jenis kelamin tidak valid.");
 }
 
-if (!in_array($role, ["dosen", "mahasiswa"], true)) {
-    respond(400, false, "Peran pendaftaran tidak valid.");
-}
-
 if ($country === "" || mb_strlen($country, "UTF-8") > 100) {
     respond(400, false, "Negara wajib diisi dan maksimal 100 karakter.");
 }
@@ -73,6 +83,27 @@ if (strlen($password) < 8 || strlen($password) > 72) {
 
 if (!hash_equals($password, $passwordConfirm)) {
     respond(400, false, "Kata sandi dan konfirmasi kata sandi tidak sama.");
+}
+
+$photoPath = null;
+if (!isset($_FILES["photo"]) || !is_uploaded_file($_FILES["photo"]["tmp_name"])) {
+    respond(400, false, "Foto Mahasiswa wajib diunggah.");
+}
+if ($_FILES["photo"]["error"] !== UPLOAD_ERR_OK) {
+    respond(400, false, "Foto gagal diunggah.");
+}
+if ((int) $_FILES["photo"]["size"] > 3 * 1024 * 1024) {
+    respond(400, false, "Ukuran foto maksimal 3 MB.");
+}
+$allowedPhotoTypes = [
+    "image/jpeg" => "jpg",
+    "image/png" => "png",
+    "image/webp" => "webp",
+];
+$finfo = new finfo(FILEINFO_MIME_TYPE);
+$photoMime = $finfo->file($_FILES["photo"]["tmp_name"]);
+if (!isset($allowedPhotoTypes[$photoMime])) {
+    respond(400, false, "Foto harus berformat JPG, PNG, atau WebP.");
 }
 
 $latitude = null;
@@ -137,6 +168,26 @@ try {
         respond(409, false, "Email sudah digunakan.");
     }
 
+    $checkNik = mysqli_prepare($conn, "SELECT `NIK` FROM `account_profiles` WHERE `NIK` = ? LIMIT 1");
+    mysqli_stmt_bind_param($checkNik, "s", $nik);
+    mysqli_stmt_execute($checkNik);
+    mysqli_stmt_store_result($checkNik);
+    $nikExists = mysqli_stmt_num_rows($checkNik) > 0;
+    mysqli_stmt_close($checkNik);
+    if ($nikExists) {
+        respond(409, false, "NIK sudah digunakan.");
+    }
+
+    $checkNim = mysqli_prepare($conn, "SELECT `NIM` FROM `account_profiles` WHERE `NIM` = ? LIMIT 1");
+    mysqli_stmt_bind_param($checkNim, "s", $username);
+    mysqli_stmt_execute($checkNim);
+    mysqli_stmt_store_result($checkNim);
+    $nimExists = mysqli_stmt_num_rows($checkNim) > 0;
+    mysqli_stmt_close($checkNim);
+    if ($nimExists) {
+        respond(409, false, "NIM sudah digunakan.");
+    }
+
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     if ($hashedPassword === false) {
         throw new RuntimeException("Password hashing failed.");
@@ -152,13 +203,30 @@ try {
 
     $latitudeForDatabase = $latitude === null ? null : (string) $latitude;
     $longitudeForDatabase = $longitude === null ? null : (string) $longitude;
+
+    $uploadDirectory = dirname(__DIR__) . DIRECTORY_SEPARATOR . "Uploads" . DIRECTORY_SEPARATOR . "Mahasiswa";
+    if (!is_dir($uploadDirectory) && !mkdir($uploadDirectory, 0755, true) && !is_dir($uploadDirectory)) {
+        throw new RuntimeException("Photo directory could not be created.");
+    }
+    $photoExtension = $allowedPhotoTypes[$photoMime];
+    $photoFilename = bin2hex(random_bytes(16)) . "." . $photoExtension;
+    $photoTarget = $uploadDirectory . DIRECTORY_SEPARATOR . $photoFilename;
+    if (!move_uploaded_file($_FILES["photo"]["tmp_name"], $photoTarget)) {
+        throw new RuntimeException("Photo upload could not be saved.");
+    }
+    $photoPath = "Uploads/Mahasiswa/" . $photoFilename;
+
     $insertProfile = mysqli_prepare(
         $conn,
-        "INSERT INTO `account_profiles` (`Username`, `FullName`, `Email`, `Region`, `Country`, `Province`, `Regency`, `District`, `Village`, `Gender`, `Latitude`, `Longitude`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO `account_profiles`
+         (`Username`, `NIK`, `NIM`, `FullName`, `Email`, `Region`, `Country`, `Province`, `Regency`, `District`, `Village`, `Gender`, `BirthDate`, `PhotoPath`, `Latitude`, `Longitude`)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );
     mysqli_stmt_bind_param(
         $insertProfile,
-        "ssssssssssss",
+        "ssssssssssssssss",
+        $username,
+        $nik,
         $username,
         $fullName,
         $email,
@@ -169,6 +237,8 @@ try {
         $district,
         $village,
         $gender,
+        $birthDate,
+        $photoPath,
         $latitudeForDatabase,
         $longitudeForDatabase
     );

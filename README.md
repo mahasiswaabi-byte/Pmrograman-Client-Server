@@ -22,6 +22,8 @@ UPDATE login SET Role = 'admin' WHERE Username = 'nama_admin';
 
 Role lama `user` akan dikonversi menjadi `mahasiswa` saat database di-import ulang.
 
+Pendaftaran publik hanya tersedia untuk **Mahasiswa**. Akun Dosen dan Admin dibuat atau ditetapkan oleh pengelola melalui database; NIK, NIM, tanggal lahir, dan foto digunakan sebagai data identitas profil Mahasiswa.
+
 ## Ruangan
 
 - RK 3.16

@@ -23,10 +23,17 @@ try {
     require_once __DIR__ . "/Koneksi.php";
     mysqli_set_charset($conn, "utf8mb4");
 
-    $statement = mysqli_prepare($conn, "SELECT `Password`, `Role` FROM `login` WHERE `Username` = ? LIMIT 1");
-    mysqli_stmt_bind_param($statement, "s", $loginUsername);
+    $statement = mysqli_prepare(
+        $conn,
+        "SELECT login.`Username`, login.`Password`, login.`Role`
+         FROM `login`
+         LEFT JOIN `account_profiles` AS profiles ON profiles.`Username` = login.`Username`
+         WHERE login.`Username` = ? OR profiles.`Email` = ?
+         LIMIT 1"
+    );
+    mysqli_stmt_bind_param($statement, "ss", $loginUsername, $loginUsername);
     mysqli_stmt_execute($statement);
-    mysqli_stmt_bind_result($statement, $storedPassword, $storedRole);
+    mysqli_stmt_bind_result($statement, $storedUsername, $storedPassword, $storedRole);
     $accountFound = mysqli_stmt_fetch($statement);
     mysqli_stmt_close($statement);
 
@@ -60,7 +67,7 @@ try {
 
     session_start();
     session_regenerate_id(true);
-    $_SESSION["username"] = $loginUsername;
+    $_SESSION["username"] = $storedUsername;
     $_SESSION["role"] = $normalizedRole;
 
     echo json_encode(["success" => true, "role" => $_SESSION["role"]]);

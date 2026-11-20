@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sistem Absensi Biometrik</title>
+    <title>SIAKAD - Sistem Informasi Akademik</title>
     <link rel="stylesheet" href="Visual.css?v=20261120-absensi" />
   </head>
 
@@ -17,13 +17,13 @@
       
         <ul class="nav-menu">
           <li><a href="#beranda">Beranda</a></li>
+          <li><a href="#fitur">Fitur</a></li>
           <li><a href="#ruangan">Ruangan</a></li>
-          <li><a href="#cara-kerja">Cara Kerja</a></li>
         </ul>
 
         <div class="nav-actions">
-          <button type="button" class="nav-button nav-button-secondary" id="register-button" aria-controls="register-modal">Daftar</button>
-          <button type="button" class="nav-button" id="login-button" aria-controls="login-modal">Login</button>
+          <button type="button" class="nav-button nav-button-secondary" id="register-button" aria-controls="register-modal">Daftar Mahasiswa</button>
+          <button type="button" class="nav-button" id="login-button" aria-controls="service-modal">Masuk</button>
           <a class="nav-button" id="dashboard-button" href="Dasbor/Beranda.php" hidden>Beranda</a>
           <button type="button" class="nav-button nav-button-secondary" id="logout-button" hidden>Keluar / Ganti akun</button>
         </div>
@@ -32,36 +32,37 @@
     </header>
 
     <main class="community-home">
-      <section class="community-hero" id="beranda">
+      <section class="community-hero siakad-hero" id="beranda">
         <div class="home-container community-hero-inner">
           <div class="community-hero-copy">
-            <p class="home-eyebrow">ABSENSI MAHASISWA DIGITAL</p>
-            <h1>Masuk ruangan dengan sidik jari dan wajah.</h1>
-            <p>Sistem absensi kampus yang menghubungkan identitas Mahasiswa, status ruangan, dan verifikasi biometrik.</p>
+            <p class="home-eyebrow">SISTEM INFORMASI AKADEMIK</p>
+            <h1>Sistem Absensi Kampus Universitas</h1>
+            <p>Platform absensi akademik untuk mahasiswa, dosen, dan operator yang mendukung sidik jari serta pengenalan wajah.</p>
             <div class="home-actions">
-              <button type="button" class="community-join-button" id="community-join-button">Mulai absensi</button>
+              <button type="button" class="community-join-button siakad-primary" id="community-join-button">Masuk ke Layanan</button>
+              <a class="home-secondary-link siakad-outline" href="#fitur">Pelajari Selengkapnya</a>
             </div>
           </div>
           <aside class="community-hero-note">
             <span class="community-note-mark" aria-hidden="true">A</span>
-            <p>Mahasiswa melakukan verifikasi, dosen mengatur akses ruangan, dan admin memantau data absensi.</p>
+            <p>Mahasiswa melakukan verifikasi, dosen mengatur akses ruangan, dan operator memantau data absensi.</p>
           </aside>
         </div>
       </section>
 
-      <section class="home-section community-intro" id="ruangan">
+      <section class="home-section community-intro" id="fitur">
         <div class="home-container home-info-layout">
           <div class="home-section-heading">
-            <p class="home-eyebrow">RUANGAN TERSEDIA</p>
-            <h2>Akses ruangan tetap terkontrol.</h2>
+            <p class="home-eyebrow">LAYANAN AKADEMIK</p>
+            <h2>Absensi terintegrasi dengan akses ruangan.</h2>
           </div>
           <div class="home-section-copy">
-            <p>RK 3.16, Lab Komputer 1, Lab Komputer 2, Lab Unprotek, dan Lab Teknik Kendali dapat dibuka atau dikunci oleh dosen.</p>
+            <p>Mahasiswa melakukan fingerprint dan pengenalan wajah, dosen mengatur status ruangan, dan operator memantau data akademik.</p>
           </div>
         </div>
       </section>
 
-      <section class="community-content-section" id="cara-kerja">
+      <section class="community-content-section" id="ruangan">
         <div class="home-container">
           <div class="community-section-heading">
             <div>
@@ -79,21 +80,47 @@
       </section>
     </main>
 
+    <div class="login-modal service-modal" id="service-modal" role="dialog" aria-modal="true" aria-labelledby="service-title" hidden>
+      <div class="service-selection-box">
+        <button class="close-button" id="close-service" type="button" aria-label="Tutup">&times;</button>
+        <h2 id="service-title">Masuk Sebagai Mahasiswa, Dosen, atau Operator?</h2>
+        <div class="service-card-grid">
+          <button class="service-card" type="button" data-role="mahasiswa">
+            <span class="service-avatar" aria-hidden="true">M</span>
+            <strong>Mahasiswa</strong>
+            <span>Akses absensi, sidik jari, wajah, dan ruangan akademik.</span>
+            <b>Masuk</b>
+          </button>
+          <button class="service-card" type="button" data-role="dosen">
+            <span class="service-avatar" aria-hidden="true">D</span>
+            <strong>Dosen</strong>
+            <span>Kelola aktivitas akademik dan status akses ruangan.</span>
+            <b>Masuk</b>
+          </button>
+          <button class="service-card" type="button" data-role="admin">
+            <span class="service-avatar" aria-hidden="true">O</span>
+            <strong>Operator</strong>
+            <span>Kelola data akademik, mahasiswa, dosen, dan jadwal.</span>
+            <b>Masuk</b>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="login-modal" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-title" hidden>
       <div class="login-box">
         <button class="close-button" id="close-login" type="button" aria-label="Tutup">&times;</button>
-        <h2 id="login-title">Login</h2>
+        <h2 id="login-title">Masuk Sebagai Mahasiswa</h2>
         <form id="login-form">
           <label for="login-role">Masuk sebagai:</label>
           <select id="login-role" name="login_role" required>
-            <option value="">Pilih peran</option>
-            <option value="dosen">Dosen</option>
             <option value="mahasiswa">Mahasiswa</option>
-            <option value="admin">Admin</option>
+            <option value="dosen">Dosen</option>
+            <option value="admin">Operator</option>
           </select>
 
-          <label for="username">Nama Pengguna:</label>
-          <input id="username" name="username" type="text" autocomplete="username" required />
+          <label for="username">NIM atau Email:</label>
+          <input id="username" name="username" type="text" autocomplete="username" placeholder="Masukkan NIM atau Email" required />
 
           <label for="password">Kata Sandi:</label>
           <div class="password-field">
@@ -116,9 +143,13 @@
           <label for="register-name">Nama lengkap:</label>
           <input id="register-name" name="full_name" type="text" autocomplete="name" maxlength="100" required />
 
-          <label for="register-username">Nama pengguna:</label>
-          <input id="register-username" name="username" type="text" autocomplete="username" minlength="3" maxlength="50" pattern="[A-Za-z0-9._\-]{3,50}" aria-describedby="username-help" required />
-          <small class="form-help" id="username-help">3-50 karakter: huruf, angka, titik, garis bawah, atau tanda hubung.</small>
+          <label for="register-nik">NIK:</label>
+          <input id="register-nik" name="nik" type="text" inputmode="numeric" minlength="16" maxlength="16" pattern="[0-9]{16}" aria-describedby="nik-help" required />
+          <small class="form-help" id="nik-help">NIK terdiri dari 16 digit sesuai KTP.</small>
+
+          <label for="register-username">NIM:</label>
+          <input id="register-username" name="username" type="text" autocomplete="username" minlength="3" maxlength="50" pattern="[A-Za-z0-9._\-]{3,50}" aria-describedby="nim-help" required />
+          <small class="form-help" id="nim-help">NIM digunakan sebagai username login.</small>
 
           <label for="register-email">Email:</label>
           <input id="register-email" name="email" type="email" autocomplete="email" maxlength="254" required />
@@ -131,12 +162,12 @@
             <option value="Lainnya">Lainnya</option>
           </select>
 
-          <label for="register-role">Daftar sebagai:</label>
-          <select id="register-role" name="role" required>
-            <option value="">Pilih peran</option>
-            <option value="dosen">Dosen</option>
-            <option value="mahasiswa">Mahasiswa</option>
-          </select>
+          <label for="register-birth-date">Tanggal lahir:</label>
+          <input id="register-birth-date" name="birth_date" type="date" required />
+
+          <label for="register-photo">Foto Mahasiswa:</label>
+          <input id="register-photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" required />
+          <small class="form-help">Unggah foto wajah berformat JPG, PNG, atau WebP maksimal 3 MB.</small>
 
           <label for="register-country">Negara:</label>
           <select id="register-country" name="country" autocomplete="country-name" aria-describedby="country-status" required disabled>
