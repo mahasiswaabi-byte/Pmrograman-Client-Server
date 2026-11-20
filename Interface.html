@@ -112,12 +112,7 @@
         <button class="close-button" id="close-login" type="button" aria-label="Tutup">&times;</button>
         <h2 id="login-title">Masuk Sebagai Mahasiswa</h2>
         <form id="login-form">
-          <label for="login-role">Masuk sebagai:</label>
-          <select id="login-role" name="login_role" required>
-            <option value="mahasiswa">Mahasiswa</option>
-            <option value="dosen">Dosen</option>
-            <option value="admin">Operator</option>
-          </select>
+          <input id="login-role" name="login_role" type="hidden" value="mahasiswa" />
 
           <label for="username">NIM atau Email:</label>
           <input id="username" name="username" type="text" autocomplete="username" placeholder="Masukkan NIM atau Email" required />

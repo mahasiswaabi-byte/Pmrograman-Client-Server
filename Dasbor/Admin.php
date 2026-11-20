@@ -24,16 +24,14 @@ try {
 
     $totalUsersResult = mysqli_query(
         $conn,
-        "SELECT COUNT(*) AS total FROM account_profiles AS profiles
-         INNER JOIN login ON login.Username = profiles.Username
-         WHERE login.Role IN ('mahasiswa', 'dosen')"
+        "SELECT COUNT(*) AS total FROM login WHERE Role IN ('mahasiswa', 'dosen')"
     );
     $totalUsers = (int) mysqli_fetch_assoc($totalUsersResult)["total"];
 
     $genderResult = mysqli_query(
         $conn,
         "SELECT COALESCE(NULLIF(TRIM(Gender), ''), 'Belum diisi') AS label, COUNT(*) AS total
-         FROM account_profiles GROUP BY label ORDER BY total DESC, label ASC"
+         FROM mahasiswa_profiles GROUP BY label ORDER BY total DESC, label ASC"
     );
     $genderCounts = [];
     while ($row = mysqli_fetch_assoc($genderResult)) {

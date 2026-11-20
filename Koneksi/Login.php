@@ -27,11 +27,18 @@ try {
         $conn,
         "SELECT login.`Username`, login.`Password`, login.`Role`
          FROM `login`
-         LEFT JOIN `account_profiles` AS profiles ON profiles.`Username` = login.`Username`
-         WHERE login.`Username` = ? OR profiles.`Email` = ?
+         WHERE login.`Username` = ?
+            OR EXISTS (
+                SELECT 1 FROM `mahasiswa_profiles` AS profiles
+                WHERE profiles.`Username` = login.`Username` AND profiles.`Email` = ?
+            )
+            OR EXISTS (
+                SELECT 1 FROM `dosen_profiles` AS profiles
+                WHERE profiles.`Username` = login.`Username` AND profiles.`Email` = ?
+            )
          LIMIT 1"
     );
-    mysqli_stmt_bind_param($statement, "ss", $loginUsername, $loginUsername);
+    mysqli_stmt_bind_param($statement, "sss", $loginUsername, $loginUsername, $loginUsername);
     mysqli_stmt_execute($statement);
     mysqli_stmt_bind_result($statement, $storedUsername, $storedPassword, $storedRole);
     $accountFound = mysqli_stmt_fetch($statement);

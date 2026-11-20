@@ -132,7 +132,7 @@ try {
     require_once __DIR__ . "/Koneksi.php";
     mysqli_set_charset($conn, "utf8mb4");
 
-    $profileTableName = "account_profiles";
+    $profileTableName = "mahasiswa_profiles";
     $profileTable = mysqli_prepare(
         $conn,
         "SELECT 1 FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = ? LIMIT 1"
@@ -157,8 +157,14 @@ try {
         respond(409, false, "Nama pengguna sudah digunakan.");
     }
 
-    $checkEmail = mysqli_prepare($conn, "SELECT `Email` FROM `account_profiles` WHERE `Email` = ? LIMIT 1");
-    mysqli_stmt_bind_param($checkEmail, "s", $email);
+    $checkEmail = mysqli_prepare(
+        $conn,
+        "SELECT `Email` FROM `mahasiswa_profiles` WHERE `Email` = ?
+         UNION ALL
+         SELECT `Email` FROM `dosen_profiles` WHERE `Email` = ?
+         LIMIT 1"
+    );
+    mysqli_stmt_bind_param($checkEmail, "ss", $email, $email);
     mysqli_stmt_execute($checkEmail);
     mysqli_stmt_store_result($checkEmail);
     $emailExists = mysqli_stmt_num_rows($checkEmail) > 0;
@@ -168,7 +174,7 @@ try {
         respond(409, false, "Email sudah digunakan.");
     }
 
-    $checkNik = mysqli_prepare($conn, "SELECT `NIK` FROM `account_profiles` WHERE `NIK` = ? LIMIT 1");
+    $checkNik = mysqli_prepare($conn, "SELECT `NIK` FROM `mahasiswa_profiles` WHERE `NIK` = ? LIMIT 1");
     mysqli_stmt_bind_param($checkNik, "s", $nik);
     mysqli_stmt_execute($checkNik);
     mysqli_stmt_store_result($checkNik);
@@ -178,7 +184,7 @@ try {
         respond(409, false, "NIK sudah digunakan.");
     }
 
-    $checkNim = mysqli_prepare($conn, "SELECT `NIM` FROM `account_profiles` WHERE `NIM` = ? LIMIT 1");
+    $checkNim = mysqli_prepare($conn, "SELECT `NIM` FROM `mahasiswa_profiles` WHERE `NIM` = ? LIMIT 1");
     mysqli_stmt_bind_param($checkNim, "s", $username);
     mysqli_stmt_execute($checkNim);
     mysqli_stmt_store_result($checkNim);
@@ -218,7 +224,7 @@ try {
 
     $insertProfile = mysqli_prepare(
         $conn,
-        "INSERT INTO `account_profiles`
+        "INSERT INTO `mahasiswa_profiles`
          (`Username`, `NIK`, `NIM`, `FullName`, `Email`, `Region`, `Country`, `Province`, `Regency`, `District`, `Village`, `Gender`, `BirthDate`, `PhotoPath`, `Latitude`, `Longitude`)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     );

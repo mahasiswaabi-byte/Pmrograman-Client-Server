@@ -393,8 +393,13 @@ serviceModal.addEventListener("click", (event) => {
 document.querySelectorAll(".service-card").forEach((card) => {
 	card.addEventListener("click", () => {
 		const role = card.dataset.role;
+		const roleLabel = {
+			dosen: "Dosen",
+			mahasiswa: "Mahasiswa",
+			admin: "Operator",
+		};
 		loginRoleSelect.value = role;
-		loginRoleSelect.dispatchEvent(new Event("change"));
+		loginTitle.textContent = `Masuk Sebagai ${roleLabel[role] || "Pengguna"}`;
 		const authSwitch = loginForm.querySelector(".auth-switch");
 		authSwitch.hidden = role !== "mahasiswa";
 		closeServiceModal();
@@ -456,15 +461,6 @@ document.addEventListener("keydown", (event) => {
 			closeServiceModal();
 		}
 	}
-});
-
-loginRoleSelect.addEventListener("change", () => {
-	const roleLabel = {
-		dosen: "Dosen",
-		mahasiswa: "Mahasiswa",
-		admin: "Operator",
-	};
-	loginTitle.textContent = `Masuk Sebagai ${roleLabel[loginRoleSelect.value] || "Pengguna"}`;
 });
 
 passwordToggle.addEventListener("click", () => {
