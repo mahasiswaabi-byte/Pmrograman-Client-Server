@@ -30,7 +30,9 @@ if ($authenticated) {
             $authenticated = false;
             $role = null;
         } else {
-            $role = $role === "admin" ? "admin" : "user";
+            $role = $role === "admin"
+                ? "admin"
+                : ($role === "dosen" ? "dosen" : "mahasiswa");
             $_SESSION["role"] = $role;
         }
     } catch (Throwable $error) {

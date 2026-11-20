@@ -1,33 +1,37 @@
-# Pmrograman-Client-Server
-Tempat tugas
+# Sistem Absensi Fingerprint dan Pengenalan Wajah
 
-## Pendaftaran akun di XAMPP
+## Menjalankan aplikasi
 
-1. Jalankan Apache dan MySQL dari XAMPP Control Panel.
-2. Buka phpMyAdmin, pilih **Import**, lalu impor [`Koneksi/Setup_Database.sql`](Koneksi/Setup_Database.sql). Jalankan skrip ini juga jika database atau tabel sudah ada: skrip menambahkan kolom profil yang belum tersedia, termasuk `Province`, `Regency`, `District`, `Village`, dan `Gender`. Jika tabel `login` sudah ada, pastikan tabel tersebut memiliki kolom `Username` dan `Password`, kolom `Username` unik, menggunakan InnoDB, serta dapat menyimpan kata sandi hingga 255 karakter.
-3. Buka aplikasi melalui Apache, misalnya `http://localhost/PEMROGRAMAN%20CLIENT%20SERVER/Interface.html`; jangan membuka berkas HTML langsung dari File Explorer karena PHP perlu dijalankan oleh Apache.
-4. Tekan **Daftar** untuk membuat akun. Daftar negara dimuat dari API publik CountriesNow dan Indonesia dipilih sebagai nilai awal. Untuk Indonesia, provinsi, kabupaten/kota, kecamatan, dan desa/kelurahan dimuat bertahap dari API publik [Emsifa wilayah Indonesia](https://www.emsifa.com/api-wilayah-indonesia/). Untuk negara lain, provinsi/daerah memiliki saran dari CountriesNow dan rincian wilayah diisi manual; isian manual juga tersedia jika API wilayah Indonesia tidak dapat diakses. Jenis kelamin dipilih dari Laki-laki, Perempuan, atau Lainnya. Data profil tersebut dikirim ke endpoint pendaftaran dan disimpan pada `account_profiles`. Pengguna dapat memilih apakah akan memberikan izin lokasi; tanpa izin lokasi, akun tetap dapat dibuat.
-5. Setelah login, anggota diarahkan ke beranda anggota. Anggota dapat mengatur persetujuan untuk ditampilkan di direktori publik; secara default profil tidak ditampilkan. Jika setuju, hanya nama lengkap dan kabupaten/kota yang dapat dilihat publik. Email, username, rincian wilayah lain, dan koordinat GPS tidak disertakan di direktori.
-6. Tombol **Keluar / Ganti akun** mengakhiri sesi dan membuka kembali formulir login.
+1. Jalankan Apache dan MySQL pada XAMPP.
+2. Import `Koneksi/Setup_Database.sql` melalui phpMyAdmin.
+3. Buka `http://localhost/PEMROGRAMAN%20CLIENT%20SERVER/Interface.html`.
 
-Kata sandi disimpan menggunakan `password_hash()`. Informasi profil, gender, negara, provinsi, kabupaten/kota, kecamatan, desa/kelurahan, dan koordinat (jika diberikan) disimpan di `account_profiles`, terpisah dari tabel kredensial `login`.
+## Peran akun
 
-## Portal komunitas lokal
+- **Mahasiswa:** memilih ruangan, melakukan verifikasi sidik jari dan wajah, lalu mencatat kehadiran.
+- **Dosen:** membuka atau mengunci lima ruangan.
+- **Admin:** memantau daftar akun, status ruangan, dan riwayat absensi.
 
-Jalankan atau impor ulang [`Koneksi/Setup_Database.sql`](Koneksi/Setup_Database.sql) setelah pembaruan fitur. Skrip membuat tabel pengumuman dan agenda serta menambahkan kolom yang diperlukan tanpa menghapus data yang sudah ada.
+## Menetapkan role
 
-Halaman publik `Interface.html` menampilkan pengumuman terbaru, agenda mendatang, dan direktori anggota yang memilih untuk tampil. Direktori hanya mengambil nama lengkap dan kabupaten/kota; email, username, rincian wilayah lain, dan GPS tidak dikirimkan. Hasil direktori dibatasi hingga 200 anggota.
+```sql
+UPDATE login SET Role = 'mahasiswa' WHERE Username = 'nama_mahasiswa';
+UPDATE login SET Role = 'dosen' WHERE Username = 'nama_dosen';
+UPDATE login SET Role = 'admin' WHERE Username = 'nama_admin';
+```
 
-Anggota dapat mengaktifkan atau menonaktifkan tampilnya profil di direktori melalui beranda anggota. Secara default profil tidak ditampilkan.
+Role lama `user` akan dikonversi menjadi `mahasiswa` saat database di-import ulang.
 
-## Dashboard admin
+## Ruangan
 
-1. Buat akun melalui formulir **Daftar**, lalu masuk ke phpMyAdmin dan jalankan perintah berikut di tab **SQL**. Ganti `nama_admin` dengan username akun yang dibuat:
+- RK 3.16
+- Lab Komputer 1
+- Lab Komputer 2
+- Lab Unprotek
+- Lab Teknik Kendali
 
-   ```sql
-   UPDATE login SET Role = 'admin' WHERE Username = 'nama_admin';
-   ```
+Dosen mengubah status ruangan melalui `Dasbor/Dosen.php`. Mahasiswa hanya dapat mencatat absensi ke ruangan yang terbuka melalui `Dasbor/Beranda.php`.
 
-2. Login menggunakan akun tersebut. Admin diarahkan ke `Dasbor/Admin.php`, yang menampilkan statistik pengguna dan menyediakan formulir untuk menerbitkan atau menghapus pengumuman serta agenda. Konten yang diterbitkan tampil di halaman publik.
+## Catatan biometrik
 
-Akses dashboard admin diverifikasi terhadap role akun di database; mengganti alamat URL saja tidak memberikan akses admin.
+Versi ini menggunakan simulasi sidik jari dan kamera perangkat untuk pengenalan wajah sebagai prototipe presentasi. Verifikasi identitas produksi memerlukan sensor fingerprint, SDK wajah/liveness, dan penyimpanan template biometrik yang aman.

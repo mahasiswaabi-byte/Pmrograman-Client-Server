@@ -24,6 +24,7 @@ $district = trim($_POST["district"] ?? "");
 $village = trim($_POST["village"] ?? "");
 $gender = trim($_POST["gender"] ?? "");
 $country = trim($_POST["country"] ?? "");
+$role = trim($_POST["role"] ?? "");
 $password = $_POST["password"] ?? "";
 $passwordConfirm = $_POST["password_confirm"] ?? "";
 $latitudeValue = $_POST["latitude"] ?? "";
@@ -56,6 +57,10 @@ foreach (
 
 if (!in_array($gender, ["Laki-laki", "Perempuan", "Lainnya"], true)) {
     respond(400, false, "Jenis kelamin tidak valid.");
+}
+
+if (!in_array($role, ["dosen", "mahasiswa"], true)) {
+    respond(400, false, "Peran pendaftaran tidak valid.");
 }
 
 if ($country === "" || mb_strlen($country, "UTF-8") > 100) {
@@ -140,8 +145,8 @@ try {
     mysqli_begin_transaction($conn);
     $transactionStarted = true;
 
-    $insertLogin = mysqli_prepare($conn, "INSERT INTO `login` (`Username`, `Password`) VALUES (?, ?)");
-    mysqli_stmt_bind_param($insertLogin, "ss", $username, $hashedPassword);
+    $insertLogin = mysqli_prepare($conn, "INSERT INTO `login` (`Username`, `Password`, `Role`) VALUES (?, ?, ?)");
+    mysqli_stmt_bind_param($insertLogin, "sss", $username, $hashedPassword, $role);
     mysqli_stmt_execute($insertLogin);
     mysqli_stmt_close($insertLogin);
 

@@ -363,6 +363,13 @@ function closeRegisterModal() {
 }
 
 loginButton.addEventListener("click", openLoginModal);
+communityJoinButton?.addEventListener("click", () => {
+	if (dashboardButton.hidden) {
+		openLoginModal();
+	} else {
+		window.location.href = dashboardButton.href;
+	}
+});
 closeLoginButton.addEventListener("click", closeLoginModal);
 registerButton.addEventListener("click", openRegisterModal);
 logoutButton.addEventListener("click", async () => {
@@ -539,7 +546,9 @@ loginForm.addEventListener("submit", async (event) => {
 		}
 
 		loginMessage.textContent = "Login berhasil. Mengalihkan ke beranda...";
-		window.location.href = result.role === "admin" ? "Dasbor/Admin.php" : "Dasbor/Beranda.php";
+		window.location.href = result.role === "admin"
+			? "Dasbor/Admin.php"
+			: (result.role === "dosen" ? "Dasbor/Dosen.php" : "Dasbor/Beranda.php");
 	} catch {
 		loginMessage.textContent = "Tidak dapat memproses login. Periksa koneksi server.";
 	} finally {
@@ -561,10 +570,12 @@ async function updateAccountButtons() {
 		loginButton.hidden = result.authenticated;
 		dashboardButton.hidden = !result.authenticated;
 		if (result.authenticated) {
-			dashboardButton.href = result.role === "admin" ? "Dasbor/Admin.php" : "Dasbor/Beranda.php";
+			dashboardButton.href = result.role === "admin"
+				? "Dasbor/Admin.php"
+				: (result.role === "dosen" ? "Dasbor/Dosen.php" : "Dasbor/Beranda.php");
 		}
 		if (communityJoinButton) {
-			communityJoinButton.textContent = result.authenticated ? "Buka beranda anggota" : "Gabung komunitas";
+			communityJoinButton.textContent = result.authenticated ? "Buka dashboard" : "Mulai absensi";
 		}
 		logoutButton.hidden = !result.authenticated;
 		accountMessage.hidden = true;

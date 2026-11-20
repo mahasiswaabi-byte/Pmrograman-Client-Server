@@ -9,6 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 $loginUsername = trim($_POST["username"] ?? "");
 $loginPassword = $_POST["password"] ?? "";
+$loginRole = trim($_POST["login_role"] ?? "");
 
 if ($loginUsername === "" || $loginPassword === "") {
     http_response_code(400);
@@ -41,10 +42,26 @@ try {
         exit;
     }
 
+    $normalizedRole = $storedRole === "dosen"
+        ? "dosen"
+        : ($storedRole === "admin" ? "admin" : "mahasiswa");
+
+    if (!in_array($loginRole, ["dosen", "mahasiswa", "admin"], true)) {
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "Pilih dosen, mahasiswa, atau admin."]);
+        exit;
+    }
+
+    if ($loginRole !== $normalizedRole) {
+        http_response_code(403);
+        echo json_encode(["success" => false, "message" => "Peran yang dipilih tidak sesuai dengan akun."]);
+        exit;
+    }
+
     session_start();
     session_regenerate_id(true);
     $_SESSION["username"] = $loginUsername;
-    $_SESSION["role"] = $storedRole === "admin" ? "admin" : "user";
+    $_SESSION["role"] = $normalizedRole;
 
     echo json_encode(["success" => true, "role" => $_SESSION["role"]]);
 } catch (Throwable $error) {

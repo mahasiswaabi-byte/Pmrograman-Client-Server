@@ -4,15 +4,23 @@ CREATE DATABASE IF NOT EXISTS `arb.wcite`
 
 USE `arb.wcite`;
 
+DROP TABLE IF EXISTS `community_announcements`;
+DROP TABLE IF EXISTS `community_events`;
+
 CREATE TABLE IF NOT EXISTS `login` (
   `Username` VARCHAR(50) NOT NULL,
   `Password` VARCHAR(255) NOT NULL,
-  `Role` ENUM('user', 'admin') NOT NULL DEFAULT 'user',
+  `Role` ENUM('admin', 'dosen', 'mahasiswa') NOT NULL DEFAULT 'mahasiswa',
   PRIMARY KEY (`Username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `login`
-  ADD COLUMN IF NOT EXISTS `Role` ENUM('user', 'admin') NOT NULL DEFAULT 'user' AFTER `Password`;
+  MODIFY COLUMN `Role` ENUM('admin', 'dosen', 'mahasiswa', 'user') NOT NULL DEFAULT 'mahasiswa';
+
+UPDATE `login` SET `Role` = 'mahasiswa' WHERE `Role` = 'user';
+
+ALTER TABLE `login`
+  MODIFY COLUMN `Role` ENUM('admin', 'dosen', 'mahasiswa') NOT NULL DEFAULT 'mahasiswa';
 
 CREATE TABLE IF NOT EXISTS `account_profiles` (
   `Username` VARCHAR(50) NOT NULL,
@@ -47,24 +55,31 @@ ALTER TABLE `account_profiles`
   ADD COLUMN IF NOT EXISTS `Gender` VARCHAR(20) NOT NULL DEFAULT '' AFTER `Village`,
   ADD COLUMN IF NOT EXISTS `PublicDirectory` TINYINT(1) NOT NULL DEFAULT 0 AFTER `Gender`;
 
-CREATE TABLE IF NOT EXISTS `community_announcements` (
+
+CREATE TABLE IF NOT EXISTS `class_rooms` (
   `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `Title` VARCHAR(150) NOT NULL,
-  `Body` TEXT NOT NULL,
-  `PublishedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `CreatedBy` VARCHAR(50) NOT NULL,
+  `RoomName` VARCHAR(100) NOT NULL,
+  `RoomStatus` ENUM('open', 'locked') NOT NULL DEFAULT 'open',
+  `UpdatedBy` VARCHAR(50) NULL,
+  `UpdatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),
-  KEY `idx_community_announcements_published` (`PublishedAt`)
+  UNIQUE KEY `uq_class_rooms_name` (`RoomName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE IF NOT EXISTS `community_events` (
+INSERT IGNORE INTO `class_rooms` (`RoomName`, `RoomStatus`) VALUES
+  ('RK 3.16', 'open'),
+  ('Lab Komputer 1', 'open'),
+  ('Lab Komputer 2', 'open'),
+  ('Lab Unprotek', 'open'),
+  ('Lab Teknik Kendali', 'open');
+
+CREATE TABLE IF NOT EXISTS `class_attendance` (
   `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `Title` VARCHAR(150) NOT NULL,
-  `Description` TEXT NOT NULL,
-  `Location` VARCHAR(150) NOT NULL,
-  `StartsAt` DATETIME NOT NULL,
-  `CreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `CreatedBy` VARCHAR(50) NOT NULL,
+  `Username` VARCHAR(50) NOT NULL,
+  `RoomName` VARCHAR(100) NOT NULL,
+  `FingerprintVerified` TINYINT(1) NOT NULL DEFAULT 0,
+  `FaceVerified` TINYINT(1) NOT NULL DEFAULT 0,
+  `VerifiedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`),
-  KEY `idx_community_events_starts` (`StartsAt`)
+  KEY `idx_class_attendance_room` (`RoomName`, `VerifiedAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

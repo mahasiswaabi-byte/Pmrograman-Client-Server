@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arb.Wcite</title>
-    <link rel="stylesheet" href="Visual.css?v=20261118-community" />
+    <title>Sistem Absensi Biometrik</title>
+    <link rel="stylesheet" href="Visual.css?v=20261120-absensi" />
   </head>
 
   <body class="home-page">
@@ -12,14 +12,13 @@
       <nav class="navbar">
         <a class="logo" href="#beranda" aria-label="Beranda">
           <img src="LogoArb.png" alt="Logo" class="logo-image" />
-          <span>Arb.Wcite</span>
+          <span>Absensi Kampus</span>
         </a>
       
         <ul class="nav-menu">
           <li><a href="#beranda">Beranda</a></li>
-          <li><a href="#pengumuman">Pengumuman</a></li>
-          <li><a href="#agenda">Agenda</a></li>
-          <li><a href="#anggota">Anggota</a></li>
+          <li><a href="#ruangan">Ruangan</a></li>
+          <li><a href="#cara-kerja">Cara Kerja</a></li>
         </ul>
 
         <div class="nav-actions">
@@ -36,74 +35,46 @@
       <section class="community-hero" id="beranda">
         <div class="home-container community-hero-inner">
           <div class="community-hero-copy">
-            <p class="home-eyebrow">PORTAL KOMUNITAS LOKAL</p>
-            <h1>Kenal lebih dekat. Bergerak bersama.</h1>
-            <p>Temukan kabar terbaru, kegiatan mendatang, dan anggota komunitas Arb.Wcite.</p>
+            <p class="home-eyebrow">ABSENSI MAHASISWA DIGITAL</p>
+            <h1>Masuk ruangan dengan sidik jari dan wajah.</h1>
+            <p>Sistem absensi kampus yang menghubungkan identitas Mahasiswa, status ruangan, dan verifikasi biometrik.</p>
             <div class="home-actions">
-              <a class="home-button" href="#agenda">Lihat agenda</a>
-              <button type="button" class="community-join-button" id="community-join-button">Gabung komunitas</button>
+              <button type="button" class="community-join-button" id="community-join-button">Mulai absensi</button>
             </div>
           </div>
           <aside class="community-hero-note">
             <span class="community-note-mark" aria-hidden="true">A</span>
-            <p>Komunitas tumbuh saat kita saling mengenal dan ikut berkontribusi.</p>
+            <p>Mahasiswa melakukan verifikasi, dosen mengatur akses ruangan, dan admin memantau data absensi.</p>
           </aside>
         </div>
       </section>
 
-      <section class="home-section community-intro" id="tentang">
+      <section class="home-section community-intro" id="ruangan">
         <div class="home-container home-info-layout">
           <div class="home-section-heading">
-            <p class="home-eyebrow">RUANG UNTUK BERTUMBUH</p>
-            <h2>Komunitas lokal, terhubung dalam satu ruang.</h2>
+            <p class="home-eyebrow">RUANGAN TERSEDIA</p>
+            <h2>Akses ruangan tetap terkontrol.</h2>
           </div>
           <div class="home-section-copy">
-            <p>Arb.Wcite membantu anggota mengikuti informasi komunitas, berpartisipasi dalam kegiatan, dan mengenal sesama anggota di berbagai wilayah.</p>
-            <a class="home-inline-link" href="#anggota">Kenali anggota komunitas <span aria-hidden="true">&rarr;</span></a>
+            <p>RK 3.16, Lab Komputer 1, Lab Komputer 2, Lab Unprotek, dan Lab Teknik Kendali dapat dibuka atau dikunci oleh dosen.</p>
           </div>
         </div>
       </section>
 
-      <section class="community-content-section" id="pengumuman">
+      <section class="community-content-section" id="cara-kerja">
         <div class="home-container">
           <div class="community-section-heading">
             <div>
-              <p class="home-eyebrow">KABAR KOMUNITAS</p>
-              <h2>Pengumuman terbaru</h2>
+              <p class="home-eyebrow">ALUR ABSENSI</p>
+              <h2>Tiga tahap verifikasi</h2>
             </div>
             <span class="community-section-number">01</span>
           </div>
-          <p class="community-data-status" id="announcements-status" role="status" aria-live="polite">Memuat pengumuman...</p>
-          <div class="community-card-grid" id="announcements-list"></div>
-        </div>
-      </section>
-
-      <section class="community-content-section community-content-alt" id="agenda">
-        <div class="home-container">
-          <div class="community-section-heading">
-            <div>
-              <p class="home-eyebrow">CATAT TANGGALNYA</p>
-              <h2>Agenda mendatang</h2>
-            </div>
-            <span class="community-section-number">02</span>
+          <div class="community-card-grid">
+            <article class="community-card"><h3>1. Pilih ruangan</h3><p>Mahasiswa memilih ruangan yang sedang terbuka.</p></article>
+            <article class="community-card"><h3>2. Verifikasi biometrik</h3><p>Mahasiswa menyelesaikan sidik jari dan pengenalan wajah.</p></article>
+            <article class="community-card"><h3>3. Catat kehadiran</h3><p>Jika ruangan terbuka, kehadiran dicatat ke sistem.</p></article>
           </div>
-          <p class="community-data-status" id="events-status" role="status" aria-live="polite">Memuat agenda...</p>
-          <div class="community-card-grid" id="events-list"></div>
-        </div>
-      </section>
-
-      <section class="community-content-section" id="anggota">
-        <div class="home-container">
-          <div class="community-section-heading">
-            <div>
-              <p class="home-eyebrow">SALING MENGENAL</p>
-              <h2>Anggota komunitas</h2>
-            </div>
-            <span class="community-section-number">03</span>
-          </div>
-          <p class="community-privacy-note">Daftar ini hanya menampilkan nama dan kabupaten/kota anggota yang secara sukarela mengizinkan profilnya ditampilkan. Email dan lokasi GPS tidak ditampilkan.</p>
-          <p class="community-data-status" id="members-status" role="status" aria-live="polite">Memuat daftar anggota...</p>
-          <ul class="community-member-list" id="members-list"></ul>
         </div>
       </section>
     </main>
@@ -113,6 +84,14 @@
         <button class="close-button" id="close-login" type="button" aria-label="Tutup">&times;</button>
         <h2 id="login-title">Login</h2>
         <form id="login-form">
+          <label for="login-role">Masuk sebagai:</label>
+          <select id="login-role" name="login_role" required>
+            <option value="">Pilih peran</option>
+            <option value="dosen">Dosen</option>
+            <option value="mahasiswa">Mahasiswa</option>
+            <option value="admin">Admin</option>
+          </select>
+
           <label for="username">Nama Pengguna:</label>
           <input id="username" name="username" type="text" autocomplete="username" required />
 
@@ -150,6 +129,13 @@
             <option value="Laki-laki">Laki-laki</option>
             <option value="Perempuan">Perempuan</option>
             <option value="Lainnya">Lainnya</option>
+          </select>
+
+          <label for="register-role">Daftar sebagai:</label>
+          <select id="register-role" name="role" required>
+            <option value="">Pilih peran</option>
+            <option value="dosen">Dosen</option>
+            <option value="mahasiswa">Mahasiswa</option>
           </select>
 
           <label for="register-country">Negara:</label>
@@ -225,12 +211,11 @@
 
     <footer class="home-footer">
       <div class="home-container">
-        <span>Arb.Wcite</span>
-        <span>Komunitas lokal, terhubung dalam satu ruang.</span>
+        <span>Sistem Absensi Kampus</span>
+        <span>Fingerprint dan pengenalan wajah.</span>
       </div>
     </footer>
 
     <script src="Login.js"></script>
-    <script src="Community.js"></script>
     </body>
 </html>
